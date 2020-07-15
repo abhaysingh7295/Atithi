@@ -1,0 +1,2 @@
+[10-Jul-2020 08:31:58 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: YES) in /home/bhanush1/public_html/atithi/includes/config.php on line 18
+[10-Jul-2020 10:54:40 UTC] PHP Warning:  file_get_contents(/tmp/adminer.version): failed to open stream: Permission denied in /home/bhanush1/public_html/atithi/adminer.php on line 510
