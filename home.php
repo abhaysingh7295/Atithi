@@ -35,6 +35,23 @@
                 </div>
               </div>
             </div>
+              	<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <div class="float-left">
+                      <i class="mdi mdi-home text-google icon-lg"></i>
+                    </div>
+                    <div class="float-right">
+                      <p class="mb-0 text-right">Transport</p>
+                      <div class="fluid-container">
+                        <h1 class="font-weight-medium text-right mb-0"><?php echo $total_trans;?></h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
               <div class="card card-statistics">
                 <div class="card-body">

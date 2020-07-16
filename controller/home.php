@@ -9,6 +9,10 @@ $qry_prop="SELECT COUNT(*) as num FROM property";
 $total_prop = mysqli_fetch_array(mysqli_query($conn,$qry_prop));
 $total_prop = $total_prop['num'];
 
+$qry_trans="SELECT COUNT(*) as num FROM transport";
+$total_trans = mysqli_fetch_array(mysqli_query($conn,$qry_trans));
+$total_trans = $total_trans['num'];
+
 $qry_gallery="SELECT COUNT(*) as num FROM gallery";
 $total_gallery = mysqli_fetch_array(mysqli_query($conn,$qry_gallery));
 $total_gallery = $total_gallery['num'];

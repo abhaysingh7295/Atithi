@@ -90,7 +90,7 @@
                                             <?php } ?>
                                         </td>
                                         <td>
-<!--                                            <a href="edittransport.php?transid=<?php echo $users_row['transid']; ?>" class="btn btn-primary">Edit</a>-->
+                                            <a href="edittransport.php?transid=<?php echo $users_row['transid']; ?>" class="btn btn-primary">Edit</a>
                                             <a href="transport.php?transid=<?php echo $users_row['transid']; ?>" onclick="return confirm('Are you sure you want to delete?');" class="btn btn-google">Delete</a>
 </td>
                                     </tr>
