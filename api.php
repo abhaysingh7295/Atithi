@@ -1772,7 +1772,7 @@ if (isset($_REQUEST['gettransportfilterprice'])) {
     while ($rd = mysqli_fetch_object($log_in_rs1)) {
 
         $array_out[] = array(
-            "propid" => $rd->propid,
+            "transid" => $rd->transid,
             "cid" => $rd->cid,
             "cname" => $rd->cname,
             "cimage" => $file_path . 'images/' . $rd->cimage,
@@ -1835,7 +1835,7 @@ if (isset($_REQUEST['gettranportdistance'])) {
     while ($rd = mysqli_fetch_object($query)) {
 
         $array_out[] = array(
-            "propid" => $rd->propid,
+            "transid" => $rd->transid,
             "cid" => $rd->cid,
             "cname" => $rd->cname,
             "cimage" => $file_path . 'images/' . $rd->cimage,
