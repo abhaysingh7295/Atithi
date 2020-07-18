@@ -1,6 +1,58 @@
 <?php
 
 $file_path = 'http://' . $_SERVER['SERVER_NAME'] . dirname($_SERVER['REQUEST_URI']) . '/';
+if (isset($_GET['userdevice'])) {
+    require_once("includes/config.php");
+    $input = @file_get_contents("php://input");
+    $event_json = json_decode($input, true);
+    //print_r($event_json);
+    //0= owner  1= company 2= ind mechanic
+
+    if (isset($event_json['userdevice'])) {
+        $userid = htmlspecialchars(strip_tags($event_json['userdevice'], ENT_QUOTES));
+        $deviceid = htmlspecialchars(strip_tags($event_json['deviceid'], ENT_QUOTES));
+        $latitude = htmlspecialchars(strip_tags($event_json['latitude'], ENT_QUOTES));
+        $longitude = htmlspecialchars(strip_tags($event_json['longitude'], ENT_QUOTES));
+
+
+        $qrry_1 = "update users SET device ='" . $deviceid . "',latitude ='" . $latitude . "',longitude ='" . $longitude . "' WHERE userid ='" . $userid . "'";
+        if (mysqli_query($conn, $qrry_1)) {
+            $array_out = array();
+            $qrry_1 = "select * from users WHERE userid ='" . $userid . "'";
+            $log_in_rs = mysqli_query($conn, $qrry_1);
+
+            if (mysqli_num_rows($log_in_rs)) {
+                $rd = mysqli_fetch_object($log_in_rs);
+
+                $array_out = array();
+
+                $array_out[] = array(
+                    "fullname" => $rd->fullname,
+                    "imageprofile" => htmlspecialchars_decode(stripslashes($rd->imageprofile)),
+                );
+
+                $output = array("code" => "200", "msg" => $array_out);
+                print_r(json_encode($output, true));
+            }
+        } else {
+            $array_out = array();
+
+            $array_out[] = array(
+                "response" => "problem in updating");
+
+            $output = array("code" => "201", "msg" => $array_out);
+            print_r(json_encode($output, true));
+        }
+    } else {
+        $array_out = array();
+
+        $array_out[] = array(
+            "response" => "Json Parem are missing");
+
+        $output = array("code" => "201", "msg" => $array_out);
+        print_r(json_encode($output, true));
+    }
+} else
 if (isset($_GET['signup'])) {
     require_once("includes/config.php");
     $input = @file_get_contents("php://input");
@@ -11,8 +63,9 @@ if (isset($_GET['signup'])) {
         $userid = htmlspecialchars(strip_tags($event_json['userid'], ENT_QUOTES));
         $fullname = htmlspecialchars(strip_tags($event_json['fullname'], ENT_QUOTES));
         $imageprofile = htmlspecialchars_decode(stripslashes($event_json['imageprofile']));
-
-
+        //$deviceid = htmlspecialchars(strip_tags($event_json['deviceid'], ENT_QUOTES));
+        //$latitude = htmlspecialchars(strip_tags($event_json['latitude'], ENT_QUOTES));
+        //$longitude = htmlspecialchars(strip_tags($event_json['longitude'], ENT_QUOTES));
         $log_in = "select * from users where userid='" . $userid . "'";
         $log_in_rs = mysqli_query($conn, $log_in);
 
@@ -25,16 +78,22 @@ if (isset($_GET['signup'])) {
                         "userid" => $userid,
                         "action" => "login",
                         "imageprofile" => $imageprofile,
-                        "fullname" => $fullname
+                        "fullname" => $fullname,
+                        "deviceid" => $deviceid,
+                        "latitude" => $latitude,
+                        "longitude" => $longitude
             );
 
             $output = array("code" => "200", "msg" => $array_out);
             print_r(json_encode($output, true));
         } else {
-            $qrry_1 = "insert into users(userid,fullname,imageprofile)values(";
+            $qrry_1 = "insert into users(userid,fullname,imageprofile,'device','longitude','latitude')values(";
             $qrry_1 .= "'" . $userid . "',";
             $qrry_1 .= "'" . $fullname . "',";
             $qrry_1 .= "'" . $imageprofile . "'";
+            //$qrry_1 .= "'" . $deviceid . "'";
+            //$qrry_1 .= "'" . $longitude . "'";
+            //$qrry_1 .= "'" . $latitude . "'";
             $qrry_1 .= ")";
             if (mysqli_query($conn, $qrry_1)) {
                 $array_out = array();
@@ -43,6 +102,9 @@ if (isset($_GET['signup'])) {
                             "userid" => $userid,
                             "action" => "signup",
                             "fullname" => $fullname,
+                            "deviceid" => $deviceid,
+                            "latitude" => $latitude,
+                            "longitude" => $longitude,
                             "imageprofile" => $imageprofile
                 );
 
@@ -430,13 +492,13 @@ if (isset($_GET['addproperty'])) {
         $place_floor_plan_image = '';
     }
 
-
     $data = array(
         'userid' => $_POST['userid'],
         'cid' => $_POST['cid'],
         'cityid' => $_POST['cityid'],
         'purpose' => $_POST['purpose'],
         'name' => addslashes($_POST['name']),
+        'gender' => addslashes(ucwords($_POST['gender'])),
         'description' => addslashes($_POST['description']),
         'bed' => $_POST['bed'],
         'bath' => $_POST['bath'],
@@ -453,9 +515,7 @@ if (isset($_GET['addproperty'])) {
     );
 
     $qry = Insert('property', $data);
-
     $propid = mysqli_insert_id($conn);
-
     $size_sum = array_sum($_FILES['galleryimage']['size']);
 
     if ($size_sum > 0) {
@@ -474,6 +534,21 @@ if (isset($_GET['addproperty'])) {
             );
 
             $qry1 = Insert('gallery', $data1);
+            $radius_km = 1;
+            $latitude = $_POST['latitude'];
+            $longitude = $_POST['longitude'];
+            $sql_distance = " ,(((acos(sin((" . $latitude . "*pi()/180)) * sin((`p`.`latitude`*pi()/180))+cos((" . $latitude . "*pi()/180)) * cos((`p`.`latitude`*pi()/180)) * cos(((" . $longitude . "-`p`.`longitude`)*pi()/180))))*180/pi())*60*1.1515*1.609344) as distance ";
+            $having = " HAVING (distance <= $radius_km) ";
+            $order_by = ' distance ASC ';
+            $query = mysqli_query($conn, "SELECT p.*" . $sql_distance . " FROM  users p $having ORDER BY $order_by");
+            $log_in_rs = mysqli_query($conn, $log_in);
+
+            if (mysqli_num_rows($log_in_rs)) {
+                while ($rd = mysqli_fetch_object($log_in_rs1)) {
+                    $message = "New Propertity '" . $_POST['name'] . "' For '" . $_POST['purpose'] . "'";
+                    push_notification_android($rd->device, $message);
+                }
+            }
         }
     }
 
@@ -1107,25 +1182,25 @@ if (isset($_GET['distance'])) {
     $longitude = $_GET['user_long'];
 
     $earthRadius = '6371.0'; // In miles(3959)  
-
-
-    $query = mysqli_query($conn, "
-	                SELECT p.*,c.*,city.*,
-	                    ROUND(
-	                        $earthRadius * ACOS(  
-	                            SIN( $latitude*PI()/180 ) * SIN( latitude*PI()/180 )
-	                            + COS( $latitude*PI()/180 ) * COS( latitude*PI()/180 )  *  COS( (longitude*PI()/180) - ($longitude*PI()/180) )   ) 
-	                    , 1)
-	                    AS distance                              
-	                                      
-	                FROM
-	                    property p,category c, city city
-	                WHERE p.cid= c.cid AND p.cityid= city.cityid AND  p.status='1'         
-	                ORDER BY
-	                    distance");
-
-
-    $log_in_rs1 = mysqli_query($conn, $query);
+//    $query = mysqli_query($conn, "
+//	                SELECT p.*,c.*,city.*,
+//	                    ROUND(
+//	                        $earthRadius * ACOS(  
+//	                            SIN( $latitude*PI()/180 ) * SIN( latitude*PI()/180 )
+//	                            + COS( $latitude*PI()/180 ) * COS( latitude*PI()/180 )  *  COS( (longitude*PI()/180) - ($longitude*PI()/180) )   ) 
+//	                    , 1)
+//	                    AS distance                              
+//	                                      
+//	                FROM
+//	                    property p,category c, city city
+//	                WHERE p.cid= c.cid AND p.cityid= city.cityid AND  p.status='1'         
+//	                ORDER BY
+//	                    distance");
+    $radius_km = 1;
+    $sql_distance = " ,(((acos(sin((" . $latitude . "*pi()/180)) * sin((`p`.`latitude`*pi()/180))+cos((" . $latitude . "*pi()/180)) * cos((`p`.`latitude`*pi()/180)) * cos(((" . $longitude . "-`p`.`longitude`)*pi()/180))))*180/pi())*60*1.1515*1.609344) as distance ";
+    $having = " HAVING (distance <= $radius_km) ";
+    $order_by = ' distance ASC ';
+    $query = mysqli_query($conn, "SELECT p.*" . $sql_distance . " FROM  property p,category c, city city  WHERE p.cid= c.cid AND p.cityid= city.cityid AND  p.status='1'  $having ORDER BY $order_by");
     $array_out = array();
     while ($rd = mysqli_fetch_object($query)) {
 
@@ -1178,6 +1253,7 @@ if (isset($_GET['propid'])) {
         $row['propid'] = $data['propid'];
         $row['purpose'] = $data['purpose'];
         $row['name'] = $data['name'];
+        $row['gender'] = $data['gender'];
         $row['description'] = stripslashes($data['description']);
         $row['phone'] = $data['phone'];
         $row['address'] = stripslashes($data['address']);
