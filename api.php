@@ -659,7 +659,7 @@ if (isset($_GET['allproperty'])) {
     $input = @file_get_contents("php://input");
     $event_json = json_decode($input, true);
 
-    if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '') {
+    if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
@@ -667,19 +667,21 @@ if (isset($_GET['allproperty'])) {
 				AND property.bath='" . $_GET['bath'] . "'
 				AND property.bed='" . $_GET['bed'] . "'
 				AND property.cid='" . $_GET['cid'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.cityid='" . $_GET['cityid'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.bath='" . $_GET['bath'] . "'
 				AND property.cid='" . $_GET['cid'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.cityid='" . $_GET['cityid'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '' AND $_GET['cid'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
@@ -687,56 +689,63 @@ if (isset($_GET['allproperty'])) {
 				AND property.bath='" . $_GET['bath'] . "'
 				AND property.bed='" . $_GET['bed'] . "' 
 				AND property.cid='" . $_GET['cid'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '') {
-        $query = "SELECT * FROM property
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cid'] != '' AND $_GET['cityid'] != '' AND $_GET['gender'] != '') {
+        echo $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.cid='" . $_GET['cid'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.cityid='" . $_GET['cityid'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
-				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '') {
+				ORDER BY propid DESC"; die;
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['bath'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.bed='" . $_GET['bed'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.bath='" . $_GET['bath'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bed'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.bed='" . $_GET['bed'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bath'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['bath'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.bath='" . $_GET['bath'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cid'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cid'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.cid='" . $_GET['cid'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
-    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cityid'] != '') {
+    } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '' AND $_GET['cityid'] != '' AND $_GET['gender'] != '') {
         $query = "SELECT * FROM property
 				LEFT JOIN category ON property.cid= category.cid
 				LEFT JOIN city ON property.cityid= city.cityid
 				WHERE property.status=1 AND property.purpose='" . $_GET['purpose'] . "'
 				AND property.cityid='" . $_GET['cityid'] . "'
+				AND property.gender='" . $_GET['gender'] . "'
 				AND property.price >= '" . $_GET['pricemin'] . "' AND property.price<='" . $_GET['pricemax'] . "'
 				ORDER BY propid DESC";
     } else if ($_GET['purpose'] != '' AND $_GET['pricemin'] != '' AND $_GET['pricemax'] != '') {
@@ -764,7 +773,7 @@ if (isset($_GET['allproperty'])) {
         $array_out[] = array(
             "propid" => $rd->propid,
             "cid" => $rd->cid,
-            "cname" => $rd->cname,
+            "gender" => $rd->gender,
             "cimage" => $file_path . 'images/' . $rd->cimage,
             "cityid" => $rd->cityid,
             "cityname" => $rd->cityname,
