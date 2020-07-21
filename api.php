@@ -3,6 +3,7 @@
 $file_path = 'http://' . $_SERVER['SERVER_NAME'] . dirname($_SERVER['REQUEST_URI']) . '/';
 if (isset($_GET['userdevice'])) {
     require_once("includes/config.php");
+    require_once("includes/function.php");
     $input = @file_get_contents("php://input");
     $event_json = json_decode($input, true);
     //print_r($event_json);
@@ -63,9 +64,7 @@ if (isset($_GET['signup'])) {
         $userid = htmlspecialchars(strip_tags($event_json['userid'], ENT_QUOTES));
         $fullname = htmlspecialchars(strip_tags($event_json['fullname'], ENT_QUOTES));
         $imageprofile = htmlspecialchars_decode(stripslashes($event_json['imageprofile']));
-        //$deviceid = htmlspecialchars(strip_tags($event_json['deviceid'], ENT_QUOTES));
-        //$latitude = htmlspecialchars(strip_tags($event_json['latitude'], ENT_QUOTES));
-        //$longitude = htmlspecialchars(strip_tags($event_json['longitude'], ENT_QUOTES));
+
         $log_in = "select * from users where userid='" . $userid . "'";
         $log_in_rs = mysqli_query($conn, $log_in);
 
@@ -78,22 +77,16 @@ if (isset($_GET['signup'])) {
                         "userid" => $userid,
                         "action" => "login",
                         "imageprofile" => $imageprofile,
-                        "fullname" => $fullname,
-                        "deviceid" => $deviceid,
-                        "latitude" => $latitude,
-                        "longitude" => $longitude
+                        "fullname" => $fullname
             );
 
             $output = array("code" => "200", "msg" => $array_out);
             print_r(json_encode($output, true));
         } else {
-            $qrry_1 = "insert into users(userid,fullname,imageprofile,'device','longitude','latitude')values(";
+            $qrry_1 = "insert into users(userid,fullname,imageprofile)values(";
             $qrry_1 .= "'" . $userid . "',";
             $qrry_1 .= "'" . $fullname . "',";
             $qrry_1 .= "'" . $imageprofile . "'";
-            //$qrry_1 .= "'" . $deviceid . "'";
-            //$qrry_1 .= "'" . $longitude . "'";
-            //$qrry_1 .= "'" . $latitude . "'";
             $qrry_1 .= ")";
             if (mysqli_query($conn, $qrry_1)) {
                 $array_out = array();
@@ -102,9 +95,6 @@ if (isset($_GET['signup'])) {
                             "userid" => $userid,
                             "action" => "signup",
                             "fullname" => $fullname,
-                            "deviceid" => $deviceid,
-                            "latitude" => $latitude,
-                            "longitude" => $longitude,
                             "imageprofile" => $imageprofile
                 );
 
@@ -545,7 +535,7 @@ if (isset($_GET['addproperty'])) {
 
             if (mysqli_num_rows($log_in_rs)) {
                 while ($rd = mysqli_fetch_object($log_in_rs1)) {
-                    $message = "New Propertity '" . $_POST['name'] . "' For '" . $_POST['purpose'] . "'";
+                    $message = array("title"=>"New Propertity","body"=>"New Propertity '" . $_POST['name'] . "' For '" . $_POST['purpose'] . "'");
                     push_notification_android($rd->device, $message);
                 }
             }
@@ -2017,7 +2007,10 @@ if (isset($_REQUEST['gettranportbytransid'])) {
     $output = array("code" => "200", "msg" => $jsonObj);
     print_r(json_encode($output, true));
 } else
-
+if(isset($_REQUEST['pushnotification'])){
+     require_once("includes/function.php");
+    push_notification_android($_REQUEST['pushnotification'], array("body"=>"Testing","title"=>"Testing"));
+}else
 if (isset($_REQUEST['deletetransport'])) {
     require_once("includes/config.php");
     $input = @file_get_contents("php://input");

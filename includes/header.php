@@ -14,7 +14,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>GOESTATE</title>
+  <title>RETAIL HUB</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="asset/node_modules/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="asset/node_modules/simple-line-icons/css/simple-line-icons.css">
@@ -38,7 +38,8 @@
     <!-- partial:../../partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-        <a class="navbar-brand brand-logo" href="home.php"><img src="asset/images/logo.png" alt="logo"/></a>
+<!--        <a class="navbar-brand brand-logo" href="home.php"><img src="asset/images/logo.png" alt="logo"/></a>-->
+          <a class="" style="text-decoration:none; color: black;  margin-top: 13px;" href="home.php">RETAIL HUB</a>
         <a class="navbar-brand brand-logo-mini" href="home.php"><img src="asset/images/ic_launcher.png" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center">

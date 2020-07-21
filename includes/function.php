@@ -121,38 +121,49 @@ function Delete($table_name, $where_clause='')
 
     /* api_key available in:
       Firebase Console -> Project Settings -> CLOUD MESSAGING -> Server key */
-    #$api_key = 'AAAAj5GrBHo:APA91bFuIUmH64BSx8C1rl9zcaxI0UuXpAhRL69Q6ENNZEGQWfYtjVIx0Rk7I2S1EYwFGHsniAnBvQKM_LJaxgf5sqmv_DEQVQW3cB8dToOEKvSFRc526BK-O_IwBzXNcRSe4Ye4pasy';
+
     $api_key = 'AAAAX0lV83E:APA91bHdBZuvo0-h5YPdmzqxy6hSyiilGDAcHt6C_hd2cfHX_Zzlx9Mo4VzkK8s7fkIPai_k5YaPvUfVqhlOsgwveLzsMHD0zc2geDzUtSwCCfB9G02dAv5oq5xBnPi6VwmlTlcj58SU';
 
-    $fields = array(
-        'registration_ids' => array(
-            $device_id
-        ),
-        'data' => array(
-            "message" => $message
-        )
+//    $fields = array(
+//        'registration_ids' => array(
+//            $device_id
+//        ),
+//        'data' => array(
+//            "message" => $message
+//        )
+//    );
+    $fields = array (
+    	'registration_ids' => array (
+    		$device_id
+    	),
+    	'notification' => array (
+    		"title" =>$message['title'],
+    		"body" => $message['body'],
+    	)
     );
-
     //header includes Content type and api key
     $headers = array(
         'Content-Type:application/json',
         'Authorization:key=' . $api_key
     );
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-    $result = curl_exec($ch);
-    if ($result === FALSE) {
-        die('FCM Send Error: ' . curl_error($ch));
-    }
-    curl_close($ch);
-    return $result;
+    // Open connection
+         $ch = curl_init();
+         // Set the url, number of POST vars, POST data
+         curl_setopt($ch, CURLOPT_URL, $url);
+         curl_setopt($ch, CURLOPT_POST, true);
+         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+         // Disabling SSL Certificate support temporarly
+         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+         // Execute post
+         $result = curl_exec($ch);
+         if ($result === FALSE) {
+             die('Curl failed: ' . curl_error($ch));
+         }
+         // Close connection
+         curl_close($ch);
+       echo $result; exit;
 }
 //GCM function
 function Send_GCM_msg($registration_id,$data)
